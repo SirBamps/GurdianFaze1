@@ -1,0 +1,331 @@
+:root {
+    --green: #28a745;
+    --gold: #ffc107;
+    --dark-green: #1e7e34;
+    --light-green: #d4edda;
+    --light-gold: #fff3cd;
+    --danger: #dc3545;
+    --warning: #ffc107;
+    --info: #17a2b8;
+    --primary: #eaeaeb;
+}
+
+body {
+    background: linear-gradient(135deg, #ecedf4 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+/* Pharmacy Header */
+.pharmacy-header {
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.pharmacy-logo {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    color: var(--gold);
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.pharmacy-title {
+    font-weight: 800;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.pharmacy-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Auth Card */
+.auth-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    padding: 2.5rem;
+    width: 100%;
+    max-width: 500px;
+    backdrop-filter: blur(10px);
+}
+
+/* Tabs */
+.nav-pills .nav-link {
+    color: #6c757d;
+    font-weight: 600;
+    padding: 1rem;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.nav-pills .nav-link.active {
+    background: var(--green);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.nav-pills .nav-link:not(.active):hover {
+    color: var(--green);
+    background: rgba(40, 167, 69, 0.1);
+}
+
+/* Form Styles */
+.form-label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.form-control, .form-select {
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+.input-group-text {
+    background: var(--light-green);
+    border: 2px solid #e9ecef;
+    border-right: none;
+    color: var(--dark-green);
+}
+
+.input-group .form-control {
+    border-left: none;
+}
+
+.input-group .btn-outline-secondary {
+    border: 2px solid #e9ecef;
+    border-left: none;
+    color: #6c757d;
+}
+
+.input-group .btn-outline-secondary:hover {
+    background: var(--light-green);
+    color: var(--dark-green);
+}
+
+/* Buttons */
+.btn {
+    border-radius: 10px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.btn-primary {
+    background: var(--green);
+    border-color: var(--green);
+}
+
+.btn-primary:hover {
+    background: var(--dark-green);
+    border-color: var(--dark-green);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+}
+
+.btn-success {
+    background: var(--dark-green);
+    border-color: var(--dark-green);
+}
+
+.btn-success:hover {
+    background: #155724;
+    border-color: #155724;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(21, 87, 36, 0.3);
+}
+
+/* Password Strength */
+.password-strength .progress {
+    border-radius: 5px;
+    background: #e9ecef;
+}
+
+.password-strength .progress-bar {
+    transition: all 0.3s ease;
+    border-radius: 5px;
+}
+
+/* Alerts */
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.alert-info {
+    background: rgba(23, 162, 184, 0.1);
+    color: var(--info);
+    border-left: 4px solid var(--info);
+}
+
+/* System Info */
+.system-info {
+    color: rgba(255,255,255,0.8);
+    max-width: 500px;
+}
+
+.system-info p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+/* Modal */
+.modal-content {
+    border-radius: 15px;
+    border: none;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    border-radius: 15px 15px 0 0;
+    border-bottom: 2px solid rgba(0,0,0,0.05);
+}
+
+/* Form Check */
+.form-check-input:checked {
+    background-color: var(--green);
+    border-color: var(--green);
+}
+
+.form-check-input:focus {
+    border-color: var(--green);
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Links */
+a {
+    color: var(--green);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+a:hover {
+    color: var(--dark-green);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.auth-card {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 1rem;
+    }
+    
+    .auth-card {
+        padding: 2rem 1.5rem;
+    }
+    
+    .pharmacy-title {
+        font-size: 2rem;
+    }
+    
+    .pharmacy-subtitle {
+        font-size: 1rem;
+    }
+    
+    .pharmacy-logo {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .auth-card {
+        padding: 1.5rem 1rem;
+    }
+    
+    .nav-pills .nav-link {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .btn {
+        padding: 0.6rem 1rem;
+    }
+}
+
+/* Loading States */
+.btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--green);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-green);
+}
+
+/* Updated body with background image */
+body {
+    background: linear-gradient(rgba(102, 126, 234, 0.8), rgba(118, 75, 162, 0.8)), 
+                url('/images/4th.jpeg') center/cover no-repeat fixed;
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Company Logo Styles */
+.company-logo {
+    margin-bottom: 1.5rem;
+}
+
+.logo-image {
+    max-width: 150px;
+    max-height: 100px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Keep existing styles, just update the background */

@@ -1,0 +1,463 @@
+/* Guardian Health Pharmacy - Alert Centre Styles */
+/* Professional alert management system */
+
+.alert-header {
+    border-bottom: 2px solid #ffeaa7;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Alert Statistics */
+.alert-stats {
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.stat-card.critical {
+    border-left: 4px solid #dc3545;
+}
+
+.stat-card.warning {
+    border-left: 4px solid #ffc107;
+}
+
+.stat-card.expired {
+    border-left: 4px solid #343a40;
+}
+
+.stat-card.resolved {
+    border-left: 4px solid #28a745;
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+}
+
+.stat-card.critical .stat-icon {
+    background: linear-gradient(135deg, #dc3545, #e4606d);
+    color: white;
+}
+
+.stat-card.warning .stat-icon {
+    background: linear-gradient(135deg, #ffc107, #ffd54f);
+    color: #212529;
+}
+
+.stat-card.expired .stat-icon {
+    background: linear-gradient(135deg, #343a40, #495057);
+    color: white;
+}
+
+.stat-card.resolved .stat-icon {
+    background: linear-gradient(135deg, #28a745, #48c78e);
+    color: white;
+}
+
+.stat-content .stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.stat-card.critical .stat-value {
+    color: #dc3545;
+}
+
+.stat-card.warning .stat-value {
+    color: #ffc107;
+}
+
+.stat-card.expired .stat-value {
+    color: #343a40;
+}
+
+.stat-card.resolved .stat-value {
+    color: #28a745;
+}
+
+.stat-label {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.stat-content small {
+    color: #6c757d;
+    font-size: 0.8rem;
+}
+
+/* Alert Filters */
+.alert-filters {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.filter-tabs .btn {
+    border-radius: 25px;
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.filter-tabs .btn.active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+/* Alert Sections */
+.alert-section {
+    margin-bottom: 2.5rem;
+}
+
+.section-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-title {
+    color: #343a40;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.section-subtitle {
+    color: #6c757d;
+    margin-bottom: 0;
+}
+
+/* Alert Cards */
+.alert-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 1.5rem;
+}
+
+.alert-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    border-left: 4px solid;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.alert-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+}
+
+.alert-card.critical {
+    border-left-color: #dc3545;
+    background: linear-gradient(135deg, #fff, #ffe6e6);
+}
+
+.alert-card.warning {
+    border-left-color: #ffc107;
+    background: linear-gradient(135deg, #fff, #fff9e6);
+}
+
+.alert-card.expired {
+    border-left-color: #343a40;
+    background: linear-gradient(135deg, #fff, #f8f9fa);
+}
+
+.alert-card.resolved {
+    border-left-color: #28a745;
+    background: linear-gradient(135deg, #fff, #e8f5e8);
+}
+
+.alert-header-row {
+    display: flex;
+    justify-content: between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.alert-title {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    flex: 1;
+}
+
+.alert-badge {
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    margin-left: 1rem;
+}
+
+.badge-critical {
+    background: #dc3545;
+    color: white;
+}
+
+.badge-warning {
+    background: #ffc107;
+    color: #212529;
+}
+
+.badge-expired {
+    background: #343a40;
+    color: white;
+}
+
+.alert-details {
+    margin-bottom: 1rem;
+}
+
+.alert-detail {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.alert-detail .label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.alert-detail .value {
+    color: #343a40;
+    font-weight: 600;
+}
+
+.alert-actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.btn-alert {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    flex: 1;
+    min-width: 80px;
+}
+
+.btn-alert-resolve {
+    background: #28a745;
+    color: white;
+}
+
+.btn-alert-resolve:hover {
+    background: #218838;
+    color: white;
+}
+
+.btn-alert-view {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-alert-view:hover {
+    background: #138496;
+    color: white;
+}
+
+.btn-alert-remove {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-alert-remove:hover {
+    background: #c82333;
+    color: white;
+}
+
+/* Urgency Indicators */
+.urgency-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 8px;
+    height: 100%;
+    background: linear-gradient(180deg, #dc3545, #ff6b6b);
+}
+
+.alert-card.warning .urgency-indicator {
+    background: linear-gradient(180deg, #ffc107, #ffd93d);
+}
+
+.alert-card.expired .urgency-indicator {
+    background: linear-gradient(180deg, #343a40, #495057);
+}
+
+/* Empty State */
+.empty-state {
+    padding: 3rem;
+    text-align: center;
+    color: #6c757d;
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+}
+
+/* Progress Bars */
+.expiry-progress {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    overflow: hidden;
+    margin: 0.5rem 0;
+}
+
+.progress-bar-critical {
+    background: linear-gradient(90deg, #dc3545, #ff6b6b);
+    height: 100%;
+}
+
+.progress-bar-warning {
+    background: linear-gradient(90deg, #ffc107, #ffd93d);
+    height: 100%;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .alert-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .stat-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .filter-tabs .btn {
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .alert-header-row {
+        flex-direction: column;
+    }
+    
+    .alert-badge {
+        margin-left: 0;
+        margin-top: 0.5rem;
+        align-self: flex-start;
+    }
+}
+
+@media (max-width: 576px) {
+    .alert-stats .col-md-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .alert-actions {
+        flex-direction: column;
+    }
+    
+    .btn-alert {
+        width: 100%;
+    }
+}
+
+/* Animation for new alerts */
+@keyframes pulseAlert {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
+}
+
+.new-alert {
+    animation: pulseAlert 2s infinite;
+}
+
+/* Status indicators */
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+}
+
+.status-critical {
+    background: #dc3545;
+    animation: blink 1s infinite;
+}
+
+.status-warning {
+    background: #ffc107;
+}
+
+.status-expired {
+    background: #343a40;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0.3;
+    }
+}
+
+/* Bulk action styles */
+.bulk-actions .btn {
+    padding: 12px;
+    font-weight: 500;
+    border-radius: 8px;
+}
+
+/* Alert priority styling */
+.priority-high {
+    border: 2px solid #dc3545;
+}
+
+.priority-medium {
+    border: 2px solid #ffc107;
+}
+
+.priority-low {
+    border: 2px solid #17a2b8;
+}

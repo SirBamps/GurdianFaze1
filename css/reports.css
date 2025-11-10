@@ -1,0 +1,512 @@
+/* Guardian Health Pharmacy - Reports & Analytics Styles */
+/* Professional reporting and analytics dashboard */
+
+.reports-header {
+    border-bottom: 2px solid #e9ecef;
+    padding-bottom: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.report-period {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Key Metrics */
+.key-metrics {
+    margin-bottom: 2rem;
+}
+
+.metric-card {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    transition: all 0.3s ease;
+    height: 100%;
+    border-left: 4px solid;
+}
+
+.metric-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.metric-card.revenue {
+    border-left-color: #28a745;
+}
+
+.metric-card.savings {
+    border-left-color: #17a2b8;
+}
+
+.metric-card.compliance {
+    border-left-color: #ffc107;
+}
+
+.metric-card.efficiency {
+    border-left-color: #6f42c1;
+}
+
+.metric-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.metric-card.revenue .metric-icon {
+    background: linear-gradient(135deg, #28a745, #48c78e);
+}
+
+.metric-card.savings .metric-icon {
+    background: linear-gradient(135deg, #17a2b8, #3ab0c9);
+}
+
+.metric-card.compliance .metric-icon {
+    background: linear-gradient(135deg, #ffc107, #ffd54f);
+}
+
+.metric-card.efficiency .metric-icon {
+    background: linear-gradient(135deg, #6f42c1, #8b5dd3);
+}
+
+.metric-content {
+    flex: 1;
+}
+
+.metric-value {
+    font-size: 1.8rem;
+    font-weight: bold;
+    line-height: 1;
+    margin-bottom: 0.25rem;
+}
+
+.metric-card.revenue .metric-value {
+    color: #28a745;
+}
+
+.metric-card.savings .metric-value {
+    color: #17a2b8;
+}
+
+.metric-card.compliance .metric-value {
+    color: #ffc107;
+}
+
+.metric-card.efficiency .metric-value {
+    color: #6f42c1;
+}
+
+.metric-label {
+    font-weight: 600;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.metric-change {
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Chart Cards */
+.charts-section {
+    margin-bottom: 2rem;
+}
+
+.chart-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    height: 100%;
+}
+
+.chart-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chart-header h5 {
+    margin: 0;
+    color: #343a40;
+    font-weight: 600;
+}
+
+.chart-actions .btn {
+    padding: 4px 12px;
+    font-size: 0.8rem;
+}
+
+.chart-body {
+    padding: 1.5rem;
+}
+
+/* Detailed Reports */
+.detailed-reports {
+    margin-bottom: 2rem;
+}
+
+.report-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+    height: 100%;
+}
+
+.report-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+}
+
+.report-header h5 {
+    margin: 0;
+    color: #343a40;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.report-body {
+    padding: 1.5rem;
+}
+
+/* Expiry Report */
+.report-summary {
+    margin-bottom: 1.5rem;
+}
+
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+}
+
+.summary-item .label {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+.summary-item .value {
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.report-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* Compliance Report */
+.compliance-checklist {
+    margin-bottom: 1.5rem;
+}
+
+.checklist-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item.success {
+    color: #28a745;
+}
+
+.checklist-item.warning {
+    color: #ffc107;
+}
+
+.compliance-score {
+    text-align: center;
+}
+
+.score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #28a745, #48c78e);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.score-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    line-height: 1;
+}
+
+.score-label {
+    font-size: 0.8rem;
+    opacity: 0.9;
+}
+
+/* Financial Report */
+.financial-metrics {
+    margin-bottom: 1rem;
+}
+
+.metric-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.metric {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.metric-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.metric-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.roi-calculation {
+    text-align: center;
+    padding-top: 1rem;
+    border-top: 1px solid #e9ecef;
+}
+
+/* Performance Report */
+.performance-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.stat {
+    text-align: center;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+.stat-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.25rem;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.performance-badge {
+    text-align: center;
+}
+
+/* Quick Actions */
+.quick-actions {
+    margin-bottom: 2rem;
+}
+
+.actions-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+}
+
+.action-btn {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    text-decoration: none;
+    color: #343a40;
+}
+
+.action-btn:hover {
+    background: #007bff;
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,123,255,0.3);
+}
+
+.action-btn i {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.action-btn span {
+    font-weight: 500;
+}
+
+/* Chart Responsive */
+canvas {
+    max-width: 100%;
+}
+
+/* Report Modal */
+.preview-placeholder {
+    padding: 3rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+    text-align: center;
+    color: #6c757d;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .metric-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 1rem;
+    }
+    
+    .metric-icon {
+        margin-right: 0;
+        margin-bottom: 1rem;
+    }
+    
+    .metric-value {
+        font-size: 1.5rem;
+    }
+    
+    .report-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+    
+    .metric-row {
+        flex-direction: column;
+    }
+    
+    .performance-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .actions-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .report-period {
+        justify-content: center;
+        margin-top: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .key-metrics .col-md-3 {
+        margin-bottom: 1rem;
+    }
+    
+    .actions-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .chart-header {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+    }
+}
+
+/* Animation for metrics */
+@keyframes countUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.metric-value {
+    animation: countUp 0.8s ease-out;
+}
+
+/* Print Styles */
+@media print {
+    .sidebar,
+    .navbar,
+    .chart-actions,
+    .report-actions,
+    .quick-actions {
+        display: none !important;
+    }
+    
+    .main-content {
+        margin-left: 0 !important;
+    }
+    
+    .chart-card,
+    .report-card {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+}
+
+/* Custom colors */
+.btn-purple {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    color: white;
+}
+
+.btn-purple:hover {
+    background-color: #5a32a3;
+    border-color: #5a32a3;
+    color: white;
+}
+
+.text-purple {
+    color: #6f42c1;
+}

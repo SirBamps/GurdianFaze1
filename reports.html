@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reports & Analytics - Guardian Health Pharmacy</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Custom CSS -->
+    <link href="css/admin.css" rel="stylesheet">
+    <link href="css/reports.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-green fixed-top shadow">
+        <div class="container-fluid">
+            <button class="btn btn-gold me-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand d-flex align-items-center" href="admin.html">
+                <div class="pharmacy-logo me-2">
+                    <i class="fas fa-chart-bar text-gold"></i>
+                </div>
+                <span class="fw-bold">GUARDIAN HEALTH PHARMACY</span>
+                <small class="ms-2 text-light opacity-75">| REPORTS & ANALYTICS</small>
+            </a>
+
+            <!-- <div class="navbar-nav ms-auto align-items-center flex-row">
+                <div class="nav-item dropdown me-3">
+                    <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell text-light fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow" id="notificationDropdown">
+                        <h6 class="dropdown-header">Expiry Alerts</h6>
+                        <div id="notificationList">
+                            <div class="dropdown-item text-center text-muted">
+                                <small>No expiry alerts</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="bg-gold rounded-circle p-1 me-2">
+                            <i class="fas fa-user-md text-dark"></i>
+                        </div>
+                        <span class="text-light" id="userName">Loading...</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a class="dropdown-item" href="#" onclick="showProfile()">
+                            <i class="fas fa-user me-2"></i>My Profile
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="showSettings()">
+                            <i class="fas fa-cog me-2"></i>Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item text-danger" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 d-md-block sidebar collapse bg-green" id="sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin.html">
+                                <i class="fas fa-home me-2"></i>My Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="inventory.html">
+                                <i class="fas fa-warehouse me-2"></i>Medine Centre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="alerts.html">
+                                <i class="fas fa-bell me-2"></i>The Alerts Centre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="reports.html">
+                                <i class="fas fa-chart-bar me-2"></i>Reports & Analytics Centre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="staff.html" onclick="showStaffManagement()">
+                                <i class="fas fa-users me-2"></i>Manage Staff
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-md-4 main-content" style="margin-top: 76px;">
+                <div class="container-fluid py-4">
+                    <!-- Page Header -->
+                    <div class="reports-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h2 class="h3 text-dark mb-1">
+                                    <i class="fas fa-chart-bar text-primary me-2"></i>Reports & Analytics
+                                </h2>
+                                <p class="text-muted mb-0">Comprehensive insights and performance metrics</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <div class="report-period">
+                                    <select class="form-select d-inline-block w-auto" id="reportPeriod" onchange="loadReportData()">
+                                        <option value="weekly">Weekly</option>
+                                        <option value="monthly" selected>Monthly</option>
+                                        <option value="quarterly">Quarterly</option>
+                                        <option value="yearly">Yearly</option>
+                                    </select>
+                                    <button class="btn btn-primary ms-2" onclick="generateComprehensiveReport()">
+                                        <i class="fas fa-file-pdf me-1"></i>Full Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Key Metrics -->
+                    <div class="key-metrics">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="metric-card revenue">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-money-bill-wave"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <div class="metric-value" id="totalRevenue">UGX 0</div>
+                                        <div class="metric-label">Total Stock Value</div>
+                                        <div class="metric-change" id="revenueChange">
+                                            <i class="fas fa-caret-up text-success"></i> 0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card savings">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-piggy-bank"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <div class="metric-value" id="totalSavings">UGX 0</div>
+                                        <div class="metric-label">Waste Prevented</div>
+                                        <div class="metric-change" id="savingsChange">
+                                            <i class="fas fa-caret-up text-success"></i> 0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card compliance">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clipboard-check"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <div class="metric-value" id="complianceRate">0%</div>
+                                        <div class="metric-label">UNDA Compliance</div>
+                                        <div class="metric-change" id="complianceChange">
+                                            <i class="fas fa-caret-up text-success"></i> 0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="metric-card efficiency">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-tachometer-alt"></i>
+                                    </div>
+                                    <div class="metric-content">
+                                        <div class="metric-value" id="efficiencyRate">0%</div>
+                                        <div class="metric-label">System Efficiency</div>
+                                        <div class="metric-change" id="efficiencyChange">
+                                            <i class="fas fa-caret-up text-success"></i> 0%
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Charts Section -->
+                    <!-- Charts Section -->
+<div class="charts-section">
+    <div class="row">
+        <!-- Expiry Analysis Chart -->
+        <div class="col-lg-6 mb-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5>Expiry Date Analysis</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportExpiryChart()">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="expiryAnalysisChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stock Value Distribution -->
+        <div class="col-lg-6 mb-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5>Stock Value Distribution</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportValueChart()">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="valueDistributionChart" height="250"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Trends -->
+        <div class="col-lg-8 mb-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5>Monthly Performance Trends</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportTrendsChart()">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="monthlyTrendsChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alert Statistics - FIXED STRUCTURE -->
+        <div class="col-lg-4 mb-4">
+            <div class="chart-card">
+                <div class="chart-header">
+                    <h5>Alert Statistics</h5>
+                    <div class="chart-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="exportAlertsChart()">
+                            <i class="fas fa-download me-1"></i>Export
+                        </button>
+                    </div>
+                </div>
+                <div class="chart-body">
+                    <canvas id="alertStatisticsChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+                    <!-- Detailed Reports -->
+                    <div class="detailed-reports">
+                        <div class="row">
+                            <!-- Expiry Report -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <h5>
+                                            <i class="fas fa-clock text-warning me-2"></i>
+                                            Expiry Report
+                                        </h5>
+                                        <button class="btn btn-sm btn-warning" onclick="generateExpiryReport()">
+                                            <i class="fas fa-file-export me-1"></i>Generate
+                                        </button>
+                                    </div>
+                                    <div class="report-body">
+                                        <div class="report-summary">
+                                            <div class="summary-item">
+                                                <span class="label">Critical Items (7 days):</span>
+                                                <span class="value text-danger" id="criticalItems">0</span>
+                                            </div>
+                                            <div class="summary-item">
+                                                <span class="label">Warning Items (30 days):</span>
+                                                <span class="value text-warning" id="warningItems">0</span>
+                                            </div>
+                                            <div class="summary-item">
+                                                <span class="label">Expired Items:</span>
+                                                <span class="value text-dark" id="expiredItems">0</span>
+                                            </div>
+                                            <div class="summary-item">
+                                                <span class="label">Total at Risk:</span>
+                                                <span class="value text-primary" id="totalAtRisk">0</span>
+                                            </div>
+                                        </div>
+                                        <div class="report-actions">
+                                            <button class="btn btn-outline-danger btn-sm" onclick="viewCriticalItems()">
+                                                View Critical
+                                            </button>
+                                            <button class="btn btn-outline-warning btn-sm" onclick="viewWarningItems()">
+                                                View Warnings
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Compliance Report -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <h5>
+                                            <i class="fas fa-clipboard-check text-success me-2"></i>
+                                            UNDA Compliance Report
+                                        </h5>
+                                        <button class="btn btn-sm btn-success" onclick="generateComplianceReport()">
+                                            <i class="fas fa-file-export me-1"></i>Generate
+                                        </button>
+                                    </div>
+                                    <div class="report-body">
+                                        <div class="compliance-checklist">
+                                            <div class="checklist-item success">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span>Expiry Records Maintained</span>
+                                            </div>
+                                            <div class="checklist-item success">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span>Regular Stock Checks</span>
+                                            </div>
+                                            <div class="checklist-item success">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span>Disposal Records</span>
+                                            </div>
+                                            <div class="checklist-item success">
+                                                <i class="fas fa-check-circle text-success me-2"></i>
+                                                <span>Staff Training</span>
+                                            </div>
+                                        </div>
+                                        <div class="compliance-score">
+                                            <div class="score-circle">
+                                                <div class="score-value" id="complianceScore">100%</div>
+                                                <div class="score-label">Compliance</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Financial Report -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <h5>
+                                            <i class="fas fa-chart-line text-info me-2"></i>
+                                            Financial Impact Report
+                                        </h5>
+                                        <button class="btn btn-sm btn-info" onclick="generateFinancialReport()">
+                                            <i class="fas fa-file-export me-1"></i>Generate
+                                        </button>
+                                    </div>
+                                    <div class="report-body">
+                                        <div class="financial-metrics">
+                                            <div class="metric-row">
+                                                <div class="metric">
+                                                    <div class="metric-value text-success" id="savingsAmount">UGX 0</div>
+                                                    <div class="metric-label">Waste Prevented</div>
+                                                </div>
+                                                <div class="metric">
+                                                    <div class="metric-value text-primary" id="stockValue">UGX 0</div>
+                                                    <div class="metric-label">Stock Value</div>
+                                                </div>
+                                            </div>
+                                            <div class="metric-row">
+                                                <div class="metric">
+                                                    <div class="metric-value text-warning" id="riskValue">UGX 0</div>
+                                                    <div class="metric-label">At Risk Value</div>
+                                                </div>
+                                                <div class="metric">
+                                                    <div class="metric-value text-danger" id="lostValue">UGX 0</div>
+                                                    <div class="metric-label">Potential Loss</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="roi-calculation">
+                                            <small class="text-muted">
+                                                <i class="fas fa-calculator me-1"></i>
+                                                Estimated ROI: <strong id="roiValue">0%</strong>
+                                            </small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Performance Report -->
+                            <div class="col-lg-6 mb-4">
+                                <div class="report-card">
+                                    <div class="report-header">
+                                        <h5>
+                                            <i class="fas fa-tachometer-alt text-purple me-2"></i>
+                                            System Performance
+                                        </h5>
+                                        <button class="btn btn-sm btn-purple" onclick="generatePerformanceReport()">
+                                            <i class="fas fa-file-export me-1"></i>Generate
+                                        </button>
+                                    </div>
+                                    <div class="report-body">
+                                        <div class="performance-stats">
+                                            <div class="stat">
+                                                <div class="stat-value" id="totalMedicines">0</div>
+                                                <div class="stat-label">Total Medicines</div>
+                                            </div>
+                                            <div class="stat">
+                                                <div class="stat-value" id="alertsGenerated">0</div>
+                                                <div class="stat-label">Alerts Generated</div>
+                                            </div>
+                                            <div class="stat">
+                                                <div class="stat-value" id="timeSaved">0h</div>
+                                                <div class="stat-label">Time Saved</div>
+                                            </div>
+                                            <div class="stat">
+                                                <div class="stat-value" id="efficiencyGain">0%</div>
+                                                <div class="stat-label">Efficiency Gain</div>
+                                            </div>
+                                        </div>
+                                        <div class="performance-badge">
+                                            <span class="badge bg-success" id="performanceRating">Excellent</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="actions-card">
+                                    <h5 class="mb-3">Quick Report Actions</h5>
+                                    <div class="actions-grid">
+                                        <button class="action-btn" onclick="generateUNDAReport()">
+                                            <i class="fas fa-file-medical"></i>
+                                            <span>UNDA Report</span>
+                                        </button>
+                                        <button class="action-btn" onclick="generateStockReport()">
+                                            <i class="fas fa-boxes"></i>
+                                            <span>Stock Report</span>
+                                        </button>
+                                        <button class="action-btn" onclick="generateExpiryReport()">
+                                            <i class="fas fa-clock"></i>
+                                            <span>Expiry Report</span>
+                                        </button>
+                                        <button class="action-btn" onclick="generateFinancialReport()">
+                                            <i class="fas fa-chart-line"></i>
+                                            <span>Financial Report</span>
+                                        </button>
+                                        <button class="action-btn" onclick="generatePerformanceReport()">
+                                            <i class="fas fa-tachometer-alt"></i>
+                                            <span>Performance Report</span>
+                                        </button>
+                                        <button class="action-btn" onclick="exportAllReports()">
+                                            <i class="fas fa-file-archive"></i>
+                                            <span>Export All</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Report Modal -->
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Report Generated</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <i class="fas fa-file-pdf fa-4x text-primary mb-3"></i>
+                    <h4 id="reportTitle">Report Ready</h4>
+                    <p class="text-muted" id="reportMessage">Your report has been generated successfully.</p>
+                    <div class="report-preview mt-3">
+                        <div class="preview-placeholder">
+                            <i class="fas fa-chart-bar fa-2x text-muted"></i>
+                            <p class="mt-2">Report Preview</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="downloadReport()">
+                        <i class="fas fa-download me-1"></i>Download PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/reports.js"></script>
+</body>
+</html>

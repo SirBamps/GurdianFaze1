@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory Management - Guardian Health Pharmacy</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/admin.css" rel="stylesheet">
+    <link href="css/inventory.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-green fixed-top shadow">
+        <div class="container-fluid">
+            <button class="btn btn-gold me-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a class="navbar-brand d-flex align-items-center" href="admin.html">
+                <div class="pharmacy-logo me-2">
+                    <i class="fas fa-warehouse text-gold"></i>
+                </div>
+                <span class="fw-bold">GUARDIAN HEALTH PHARMACY</span>
+                <small class="ms-2 text-light opacity-75">| INVENTORY MANAGEMENT</small>
+            </a>
+
+            <!-- <div class="navbar-nav ms-auto align-items-center flex-row">
+                <div class="nav-item dropdown me-3">
+                    <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell text-light fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">0</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow" id="notificationDropdown">
+                        <h6 class="dropdown-header">Expiry Alerts</h6>
+                        <div id="notificationList">
+                            <div class="dropdown-item text-center text-muted">
+                                <small>No expiry alerts</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="bg-gold rounded-circle p-1 me-2">
+                            <i class="fas fa-user-md text-dark"></i>
+                        </div>
+                        <span class="text-light" id="userName">Loading...</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a class="dropdown-item" href="#" onclick="showProfile()">
+                            <i class="fas fa-user me-2"></i>My Profile
+                        </a>
+                        <a class="dropdown-item" href="#" onclick="showSettings()">
+                            <i class="fas fa-cog me-2"></i>Settings
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item text-danger" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div> -->
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-lg-2 col-md-3 d-md-block sidebar collapse bg-green" id="sidebar">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link" href="nuser.html">
+                                <i class="fas fa-home me-2"></i>My Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="ninventory.html">
+                                <i class="fas fa-warehouse me-2"></i>Medicine Centre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nalerts.html" onclick="showAlertCentre()">
+                                <i class="fas fa-bell me-2"></i>The Alerts Centre
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-md-4 main-content" style="margin-top: 76px;">
+                <div class="container-fluid py-4">
+                    <!-- Page Header -->
+                    <div class="inventory-header">
+                        <div class="row align-items-center">
+                            <div class="col-md-6">
+                                <h2 class="h3 text-dark mb-1">
+                                    <i class="fas fa-warehouse text-green me-2"></i>Medicine Centre
+                                </h2>
+                                <p class="text-muted mb-0">Manage all pharmacy stock items</p>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <button class="btn btn-green me-2" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+                                    <i class="fas fa-plus-circle me-1"></i>Add New Medicine
+                                </button>
+                                <button class="btn btn-outline-green" onclick="exportInventory()">
+                                    <i class="fas fa-download me-1"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats -->
+                    <div class="quick-stats">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="totalMedicines">0</span>
+                                    <span class="stat-label">Total Medicines</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="nearExpiry">0</span>
+                                    <span class="stat-label">Near Expiry</span>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <span class="stat-value" id="outOfStock">0</span>
+                                    <span class="stat-label">Out of Stock</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Search and Actions -->
+                    <div class="inventory-actions">
+                        <div class="row align-items-center">
+                            <div class="col-md-4">
+                                <div class="search-box">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" class="form-control" id="searchInput" placeholder="Search medicines...">
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="filter-buttons">
+                                    <div class="btn-group w-100">
+                                        <button class="btn btn-outline-primary active" onclick="setTimeFilter('all')" id="filterAll">
+                                            <i class="fas fa-list me-1"></i>All
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="setTimeFilter('monthly')" id="filterMonthly">
+                                            <i class="fas fa-calendar me-1"></i>Monthly
+                                        </button>
+                                        <button class="btn btn-outline-primary" onclick="setTimeFilter('weekly')" id="filterWeekly">
+                                            <i class="fas fa-calendar-week me-1"></i>Weekly
+                                        </button>
+                                        <button class="btn btn-outline-danger" onclick="setTimeFilter('expired')" id="filterExpired">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Expired
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 text-end">
+                                <div class="action-buttons">
+                                    <button class="btn btn-outline-success btn-sm me-2" data-bs-toggle="modal" data-bs-target="#importModal">
+                                        <i class="fas fa-file-import me-1"></i>Import CSV
+                                    </button>
+                                    <button class="btn btn-outline-warning btn-sm me-2" onclick="filterByStatus('expiring')">
+                                        <i class="fas fa-clock me-1"></i>Expiring Soon
+                                    </button>
+                                    <button class="btn btn-outline-info btn-sm" onclick="clearFilters()">
+                                        <i class="fas fa-sync me-1"></i>Clear
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Medicine Table -->
+                    <div class="inventory-container">
+                        <div class="table-container">
+                            <table class="medicine-table">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Batch No.</th>
+                                        <th>Quantity</th>
+                                        <th>Expiry Date</th>
+                                        <th>Store/Shelf</th>
+                                        <th>Status</th>
+                                        <th>Price (UGX)</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="medicineTableBody">
+                                    <!-- Data will be loaded here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="empty-state" style="display: none;">
+                            <i class="fas fa-inbox"></i>
+                            <h4>No Medicines Found</h4>
+                            <p>Get started by adding your first medicine to inventory.</p>
+                            <button class="btn btn-green" data-bs-toggle="modal" data-bs-target="#addMedicineModal">
+                                <i class="fas fa-plus-circle me-1"></i>Add First Medicine
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importModalLabel">
+                        <i class="fas fa-file-import me-2"></i>Import Stock from CSV/Excel
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Import Instructions:</strong> Upload a CSV or Excel file with your existing stock data.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="csvFile" class="form-label">Select File</label>
+                        <input class="form-control" type="file" id="csvFile" accept=".csv,.xlsx,.xls">
+                        <div class="form-text">Supported formats: CSV, Excel (.xlsx, .xls)</div>
+                    </div>
+                    
+                    <div class="import-template mb-3">
+                        <h6>Expected File Format:</h6>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Medicine Name</th>
+                                        <th>Batch No</th>
+                                        <th>Quantity</th>
+                                        <th>Expiry Date</th>
+                                        <th>Store No</th>
+                                        <th>Shelf No</th>
+                                        <th>Unit Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Panadol 500mg</td>
+                                        <td>BATCH-001</td>
+                                        <td>100</td>
+                                        <td>2024-12-31</td>
+                                        <td>STORE-001</td>
+                                        <td>SHELF-A1</td>
+                                        <td>1500</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-outline-primary" onclick="downloadTemplate()">
+                            <i class="fas fa-download me-1"></i>Download Template
+                        </a>
+                    </div>
+                    
+                    <div class="import-progress" style="display: none;" id="importProgress">
+                        <div class="progress mb-2">
+                            <div class="progress-bar" role="progressbar" style="width: 0%" id="progressBar">0%</div>
+                        </div>
+                        <small class="text-muted" id="progressText">Processing...</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-success" onclick="processImport()" id="importBtn">
+                        <i class="fas fa-upload me-1"></i>Import Stock
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Medicine Modal -->
+    <div class="modal fade" id="addMedicineModal" tabindex="-1" aria-labelledby="addMedicineModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addMedicineModalLabel">
+                        <i class="fas fa-pills me-2"></i>Add New Medicine
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="medicineForm">
+                        <input type="hidden" id="editMedicineId">
+                        
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h6>Basic Information</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="medicineName" class="form-label">Medicine Name *</label>
+                                    <input type="text" class="form-control" id="medicineName" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="medicineType" class="form-label">Medicine Type *</label>
+                                    <select class="form-select" id="medicineType" required>
+                                        <option value="">Select Type</option>
+                                        <option value="tablet">Tablets</option>
+                                        <option value="capsule">Capsules</option>
+                                        <option value="syrup">Syrup</option>
+                                        <option value="injection">Injection</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="manufacturer" class="form-label">Manufacturer *</label>
+                                    <input type="text" class="form-control" id="manufacturer" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="batchNumber" class="form-label">Batch Number *</label>
+                                    <input type="text" class="form-control" id="batchNumber" required>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Stock Information -->
+                        <div class="form-section">
+                            <h6>Stock Information</h6>
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="quantity" class="form-label">Quantity *</label>
+                                    <input type="number" class="form-control" id="quantity" required min="1">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="unitPrice" class="form-label">Unit Price (UGX) *</label>
+                                    <input type="number" class="form-control" id="unitPrice" required min="0" step="100">
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="sellingPrice" class="form-label">Selling Price (UGX) *</label>
+                                    <input type="number" class="form-control" id="sellingPrice" required min="0" step="100">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location Information -->
+                        <div class="form-section">
+                            <h6>Storage Location</h6>
+                            <div class="location-info">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="storeNumber" class="form-label">Store Number *</label>
+                                        <input type="text" class="form-control" id="storeNumber" required placeholder="e.g., STORE-001">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="shelfNumber" class="form-label">Shelf Number *</label>
+                                        <input type="text" class="form-control" id="shelfNumber" required placeholder="e.g., SHELF-A1">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expiry Information -->
+                        <div class="form-section">
+                            <h6>Expiry Information</h6>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="expiryDate" class="form-label">Expiry Date *</label>
+                                    <input type="date" class="form-control" id="expiryDate" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="supplier" class="form-label">Supplier</label>
+                                    <input type="text" class="form-control" id="supplier" placeholder="Optional">
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-green" onclick="saveMedicine()">
+                        <i class="fas fa-save me-1"></i>Save Medicine
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Medicine Modal -->
+    <div class="modal fade" id="viewMedicineModal" tabindex="-1" aria-labelledby="viewMedicineModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewMedicineModalLabel">Medicine Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="medicineDetails">
+                    <!-- Details will be loaded here -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/inventory.js"></script>
+</body>
+</html>

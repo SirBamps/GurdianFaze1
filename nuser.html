@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guardian Health Pharmacy - Pharmacist Dashboard</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="css/admin.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark-green fixed-top shadow">
+        <div class="container-fluid">
+            <!-- Mobile sidebar toggle -->
+            <button class="btn btn-gold me-2 d-lg-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <!-- Pharmacy Brand -->
+            <a class="navbar-brand d-flex align-items-center" href="nuser.html">
+                <div class="pharmacy-logo me-2">
+                    <i class="fas fa-plus-circle text-gold"></i>
+                </div>
+                <span class="fw-bold">GUARDIAN HEALTH PHARMACY</span>
+                <small class="ms-2 text-light opacity-75">| PHARMACIST DASHBOARD</small>
+            </a>
+
+            <!-- User Controls -->
+            <div class="navbar-nav ms-auto align-items-center flex-row">
+                <!-- Notifications -->
+                <div class="nav-item dropdown me-3">
+                    <a class="nav-link position-relative" href="#" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell text-light fs-5"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">
+                            0
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow" id="notificationDropdown">
+                        <h6 class="dropdown-header">Expiry Alerts</h6>
+                        <div id="notificationList">
+                            <div class="dropdown-item text-center text-muted">
+                                <small>No expiry alerts</small>
+                            </div>
+                        </div>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item text-center text-green" href="alerts.html">
+                            <i class="fas fa-bell me-1"></i>View All Alerts
+                        </a>
+                    </div>
+                </div>
+
+                <!-- User Profile -->
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
+                        <div class="bg-gold rounded-circle p-1 me-2">
+                            <i class="fas fa-user-md text-dark"></i>
+                        </div>
+                        <span class="text-light" id="userName">Loading...</span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end shadow">
+                        <a class="dropdown-item" href="#" onclick="showProfile()">
+                            <i class="fas fa-user me-2"></i>My Profile
+                        </a>
+                        <hr class="dropdown-divider">
+                        <a class="dropdown-item text-danger logout-btn" href="#" onclick="logout()">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar - Simplified for Pharmacist -->
+            <div class="col-lg-2 col-md-3 d-md-block sidebar collapse bg-green" id="sidebar">
+                <div class="position-sticky pt-3">
+                    <!-- Navigation Menu - Limited Access -->
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="nuser.html">
+                                <i class="fas fa-home me-2"></i>My Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="ninventory.html">
+                                <i class="fas fa-warehouse me-2"></i>Medicine Centre
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="nalerts.html">
+                                <i class="fas fa-bell me-2"></i>The Alerts Centre
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <main class="col-lg-10 col-md-9 ms-sm-auto px-md-4 main-content" style="margin-top: 76px;">
+                <div class="container-fluid py-4">
+                    <!-- Welcome Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h2 class="h3 text-dark mb-1">Pharmacist Dashboard</h2>
+                                    <p class="text-muted mb-0" id="pageSubtitle">Welcome back! Here's your pharmacy summary.</p>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">System Status:</small>
+                                    <br><strong id="dataStatus">Loading...</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Stats Row -->
+                    <div class="row mb-4">
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                                7-Day Critical
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="criticalCount">0</div>
+                                            <small class="text-muted">Items expiring soon</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-exclamation-triangle fa-2x text-danger"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                                30-Day Warning
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="warningCount">0</div>
+                                            <small class="text-muted">Items needing attention</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clock fa-2x text-warning"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                                Total Medicines
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="totalMedicines">0</div>
+                                            <small class="text-muted">Active stock items</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-pills fa-2x text-success"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                                Compliance Score
+                                            </div>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800" id="complianceScore">0%</div>
+                                            <small class="text-muted">UNDA Standards</small>
+                                        </div>
+                                        <div class="col-auto">
+                                            <i class="fas fa-clipboard-check fa-2x text-info"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Main Action Cards -->
+                    <div class="row">
+                        <!-- Expiry Timeline -->
+                        <div class="col-12 mb-4">
+                            <div class="card action-card border-0 shadow">
+                                <div class="card-header bg-danger text-white py-3">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-clock me-2"></i>Expiry Timeline Overview
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="expiry-timeline">
+                                        <div class="timeline-item critical mb-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="time-label fw-bold text-danger">7-DAY CRITICAL</span>
+                                                <span class="badge bg-danger" id="criticalBadge">0 Items</span>
+                                            </div>
+                                            <div class="progress" style="height: 25px;">
+                                                <div class="progress-bar bg-danger" style="width: 0%" id="criticalProgress"></div>
+                                            </div>
+                                            <small class="text-muted">Requires immediate action - Check daily</small>
+                                        </div>
+                                        
+                                        <div class="timeline-item warning mb-4">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="time-label fw-bold text-warning">30-DAY WARNING</span>
+                                                <span class="badge bg-warning" id="warningBadge">0 Items</span>
+                                            </div>
+                                            <div class="progress" style="height: 25px;">
+                                                <div class="progress-bar bg-warning" style="width: 0%" id="warningProgress"></div>
+                                            </div>
+                                            <small class="text-muted">Needs attention soon - Review weekly</small>
+                                        </div>
+                                        
+                                        <div class="timeline-item safe">
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <span class="time-label fw-bold text-success">30+ DAYS SAFE</span>
+                                                <span class="badge bg-success" id="safeBadge">0 Items</span>
+                                            </div>
+                                            <div class="progress" style="height: 25px;">
+                                                <div class="progress-bar bg-success" style="width: 0%" id="safeProgress"></div>
+                                            </div>
+                                            <small class="text-muted">Monitor regularly - Monthly checks</small>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 text-center">
+                                        <a href="ninventory.html" class="btn btn-green me-2">
+                                            <i class="fas fa-warehouse me-1"></i>Manage Inventory
+                                        </a>
+                                        <a href="nalerts.html" class="btn btn-outline-danger">
+                                            <i class="fas fa-bell me-1"></i>View Alerts
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions - Simplified for Pharmacist -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card action-card border-0 shadow">
+                                <div class="card-header bg-success text-white py-3">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-rocket me-2"></i>Quick Actions
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <a href="ninventory.html" class="btn btn-outline-success w-100 h-100 py-3 d-flex flex-column align-items-center">
+                                                <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                                <div>Add Medicine</div>
+                                                <small class="text-muted">New stock entry</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="ninventory.html" class="btn btn-outline-primary w-100 h-100 py-3 d-flex flex-column align-items-center">
+                                                <i class="fas fa-search fa-2x mb-2"></i>
+                                                <div>Search Stock</div>
+                                                <small class="text-muted">Find medicines</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="nalerts.html" class="btn btn-outline-warning w-100 h-100 py-3 d-flex flex-column align-items-center">
+                                                <i class="fas fa-bell fa-2x mb-2"></i>
+                                                <div>Check Alerts</div>
+                                                <small class="text-muted">Expiry warnings</small>
+                                            </a>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <a href="ninventory.html" class="btn btn-outline-info w-100 h-100 py-3 d-flex flex-column align-items-center">
+                                                <i class="fas fa-list fa-2x mb-2"></i>
+                                                <div>View Stock</div>
+                                                <small class="text-muted">All medicines</small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Financial Impact -->
+                        <div class="col-lg-6 mb-4">
+                            <div class="card action-card border-0 shadow">
+                                <div class="card-header bg-primary text-white py-3">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-chart-line me-2"></i>Stock Overview
+                                    </h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row text-center">
+                                        <div class="col-6 mb-4">
+                                            <div class="saving-item">
+                                                <span class="saving-amount text-success" id="monthlySavings">UGX 0</span>
+                                                <div class="saving-label">Monthly Savings</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 mb-4">
+                                            <div class="saving-item">
+                                                <span class="saving-amount text-danger" id="wastePrevented">UGX 0</span>
+                                                <div class="saving-label">Waste Prevented</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row text-center">
+                                        <div class="col-6">
+                                            <div class="stat-small">
+                                                <div class="h6 mb-0" id="totalBatches">0</div>
+                                                <small class="text-muted">Total Batches</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="stat-small">
+                                                <div class="h6 mb-0" id="totalValue">UGX 0</div>
+                                                <small class="text-muted">Stock Value</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 p-2 bg-light-green rounded">
+                                        <small class="text-green">
+                                            <i class="fas fa-lightbulb me-1"></i>
+                                            <strong>Tip:</strong> Regular monitoring prevents 70% of medicine waste
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Activity -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card border-0 shadow">
+                                <div class="card-header bg-dark-green text-white py-3">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <h5 class="card-title mb-0">
+                                            <i class="fas fa-history me-2"></i>Recent Activity
+                                        </h5>
+                                        <button class="btn btn-sm btn-gold" onclick="clearActivity()">
+                                            <i class="fas fa-trash me-1"></i>Clear
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div id="recentActivityContent">
+                                        <div class="text-center text-muted py-4">
+                                            <i class="fas fa-inbox fa-3x mb-3"></i>
+                                            <p>No recent activity recorded</p>
+                                            <small>Activities will appear here as you use the system</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-user me-2"></i>My Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="profileForm">
+                        <div class="mb-3 text-center">
+                            <div class="avatar-lg bg-primary text-white rounded-circle mx-auto d-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
+                                <i class="fas fa-user-md fa-2x"></i>
+                            </div>
+                            <h5 id="profileUserName">Loading...</h5>
+                            <p class="text-muted" id="profileUserRole">Pharmacist</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="profileName">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Email Address</label>
+                            <input type="email" class="form-control" id="profileEmail">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword">
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword">
+                            <div class="form-text">Leave blank to keep current password</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" onclick="updateProfile()">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark-green text-white py-3 mt-5">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small>&copy; 2024 Guardian Health Pharmacy. Expiry Date Tracking System v1.0</small>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <small id="lastUpdateTime">Loading...</small>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="js/nuser.js"></script>
+</body>
+</html>
