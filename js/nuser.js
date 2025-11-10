@@ -37,12 +37,11 @@ function loadDashboardData() {
     $('#profileUserRole').text('Pharmacist');
 
     updateStatistics();
-    loadRecentActivities();
+    loadRecentActivities(); // This will now show only user's activities
     loadNotifications();
     updateLastUpdateTime();
 }
 
-// All other functions remain the same as admin.js but with pharmacist-specific adjustments
 function updateStatistics() {
     const medicines = JSON.parse(localStorage.getItem('pharmacy_medicines') || '[]');
     const now = new Date();
@@ -106,9 +105,6 @@ function updateStatistics() {
     // Update system status
     $('#dataStatus').text(medicines.length > 0 ? 'Data Active' : 'Awaiting Data Entry');
 }
-
-// Keep all other functions from admin.js (loadRecentActivities, loadNotifications, etc.)
-// but remove admin-specific features like staff management
 
 function setupEventListeners() {
     // Mobile sidebar toggle
@@ -207,7 +203,7 @@ function updateProfile() {
     addActivity('Updated user profile', userData.name);
 }
 
-// Activity Management
+// Activity Management - PHARMACIST VERSION (Only shows own activities)
 function addActivity(description, user) {
     const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
     const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
@@ -215,7 +211,8 @@ function addActivity(description, user) {
     activities.push({
         description: description,
         user: user || userData.name || 'System',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        userId: userData.id || userData.email // Track which user created the activity
     });
 
     if (activities.length > 50) {
@@ -227,12 +224,61 @@ function addActivity(description, user) {
 }
 
 function clearActivity() {
-    if (confirm('Are you sure you want to clear all activity logs?')) {
-        localStorage.setItem('pharmacy_activities', JSON.stringify([]));
+    const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    
+    if (confirm('Are you sure you want to clear your activity logs?')) {
+        // For pharmacists, only clear their own activities
+        let activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+        activities = activities.filter(activity => activity.userId !== (userData.id || userData.email));
+        
+        localStorage.setItem('pharmacy_activities', JSON.stringify(activities));
         loadRecentActivities();
-        showNotification('Activity log cleared', 'success');
-        addActivity('Cleared activity log', null);
+        showNotification('Your activity log cleared', 'success');
+        addActivity('Cleared personal activity log', null);
     }
+}
+
+// Load Recent Activities - PHARMACIST VERSION (Only shows own activities)
+function loadRecentActivities() {
+    const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    const activityContainer = $('#recentActivityContent');
+    
+    // Filter activities to show only current user's activities
+    const userActivities = activities.filter(activity => 
+        activity.userId === (userData.id || userData.email)
+    );
+    
+    if (userActivities.length === 0) {
+        activityContainer.html(
+            '<div class="text-center text-muted py-4">' +
+            '<i class="fas fa-inbox fa-3x mb-3"></i>' +
+            '<p>No recent activity recorded</p>' +
+            '<small>Your activities will appear here as you use the system</small>' +
+            '</div>'
+        );
+        return;
+    }
+
+    let activityHTML = '';
+    $.each(userActivities.slice(-8).reverse(), function(index, activity) {
+        activityHTML += 
+            '<div class="activity-item">' +
+            '<div class="row align-items-center">' +
+            '<div class="col-md-3">' +
+            '<small class="activity-time">' + formatTime(activity.timestamp) + '</small>' +
+            '</div>' +
+            '<div class="col-md-7">' +
+            '<span class="activity-desc">' + activity.description + '</span>' +
+            '</div>' +
+            '<div class="col-md-2 text-end">' +
+            '<small class="activity-user">' + activity.user + '</small>' +
+            '</div>' +
+            '</div>' +
+            '</div>';
+    });
+
+    activityContainer.html(activityHTML);
 }
 
 // System Functions
@@ -314,44 +360,6 @@ function logout() {
     }
 }
 
-// Copy all other necessary functions from admin.js (loadRecentActivities, loadNotifications, etc.)
-// These functions remain exactly the same as in admin.js
-function loadRecentActivities() {
-    const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
-    const activityContainer = $('#recentActivityContent');
-    
-    if (activities.length === 0) {
-        activityContainer.html(
-            '<div class="text-center text-muted py-4">' +
-            '<i class="fas fa-inbox fa-3x mb-3"></i>' +
-            '<p>No recent activity recorded</p>' +
-            '<small>Activities will appear here as you use the system</small>' +
-            '</div>'
-        );
-        return;
-    }
-
-    let activityHTML = '';
-    $.each(activities.slice(-8).reverse(), function(index, activity) {
-        activityHTML += 
-            '<div class="activity-item">' +
-            '<div class="row align-items-center">' +
-            '<div class="col-md-3">' +
-            '<small class="activity-time">' + formatTime(activity.timestamp) + '</small>' +
-            '</div>' +
-            '<div class="col-md-7">' +
-            '<span class="activity-desc">' + activity.description + '</span>' +
-            '</div>' +
-            '<div class="col-md-2 text-end">' +
-            '<small class="activity-user">' + activity.user + '</small>' +
-            '</div>' +
-            '</div>' +
-            '</div>';
-    });
-
-    activityContainer.html(activityHTML);
-}
-
 function loadNotifications() {
     const medicines = JSON.parse(localStorage.getItem('pharmacy_medicines') || '[]');
     const notificationList = $('#notificationList');
@@ -384,7 +392,7 @@ function loadNotifications() {
     criticalAlerts.slice(0, 3).forEach(med => {
         const daysLeft = Math.ceil((new Date(med.expiryDate) - now) / (1000 * 60 * 60 * 24));
         notificationHTML += 
-            '<a class="dropdown-item" href="alerts.html">' +
+            '<a class="dropdown-item" href="nalerts.html">' +
             '<div class="d-flex align-items-center">' +
             '<div class="bg-danger rounded p-1 me-2">' +
             '<i class="fas fa-exclamation-triangle text-white"></i>' +
@@ -400,7 +408,7 @@ function loadNotifications() {
     // Show expired alerts
     expiredAlerts.slice(0, 2).forEach(med => {
         notificationHTML += 
-            '<a class="dropdown-item" href="alerts.html">' +
+            '<a class="dropdown-item" href="nalerts.html">' +
             '<div class="d-flex align-items-center">' +
             '<div class="bg-dark rounded p-1 me-2">' +
             '<i class="fas fa-skull-crossbones text-white"></i>' +

@@ -7,8 +7,7 @@ $(document).ready(function() {
 });
 
 function initializeSystem() {
-
-     // Check if user is properly logged in
+    // Check if user is properly logged in
     const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
     if (!currentUser.isLoggedIn) {
         // Redirect to login if not authenticated
@@ -117,10 +116,14 @@ function updateStatistics() {
 }
 
 function loadRecentActivities() {
-    const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const allActivities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
     const activityContainer = $('#recentActivityContent');
     
-    if (activities.length === 0) {
+    // Filter activities based on user role
+    const filteredActivities = filterActivitiesByRole(allActivities, currentUser);
+    
+    if (filteredActivities.length === 0) {
         activityContainer.html(
             '<div class="text-center text-muted py-4">' +
             '<i class="fas fa-inbox fa-3x mb-3"></i>' +
@@ -132,7 +135,7 @@ function loadRecentActivities() {
     }
 
     let activityHTML = '';
-    $.each(activities.slice(-8).reverse(), function(index, activity) {
+    $.each(filteredActivities.slice(-8).reverse(), function(index, activity) {
         activityHTML += 
             '<div class="activity-item">' +
             '<div class="row align-items-center">' +
@@ -150,6 +153,79 @@ function loadRecentActivities() {
     });
 
     activityContainer.html(activityHTML);
+}
+
+// Filter activities based on user role and permissions
+function filterActivitiesByRole(allActivities, currentUser) {
+    if (currentUser.role === 'admin') {
+        // Admins see all activities
+        return allActivities.filter(activity => {
+            // Only hide other admins' sensitive actions if not the current admin
+            if (activity.visibility === 'admin-only' && activity.userRole === 'admin' && activity.userEmail !== currentUser.email) {
+                return false; // Hide other admins' sensitive activities
+            }
+            return true; // Show everything else
+        });
+    } else {
+        // Normal users see only their own activities + general system activities
+        return allActivities.filter(activity => {
+            // Always show user their own activities
+            if (activity.userEmail === currentUser.email) {
+                return true;
+            }
+            // Show system activities
+            if (activity.userRole === 'system') {
+                return true;
+            }
+            // Don't show other users' admin-only activities
+            return activity.visibility !== 'admin-only';
+        });
+    }
+}
+
+function determineActivityVisibility(description, userRole) {
+    const sensitiveKeywords = [
+        'staff', 'admin', 'password', 'user account', 'permission', 
+        'role', 'delete', 'created account', 'deleted account',
+        'changed password', 'updated permissions', 'cleared activity'
+    ];
+    
+    const isSensitive = sensitiveKeywords.some(keyword => 
+        description.toLowerCase().includes(keyword)
+    );
+    
+    if (isSensitive) {
+        return 'admin-only';
+    }
+    
+    return 'all'; // Default to visible to all
+}
+
+function debugActivityFiltering() {
+    const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    const allActivities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const filteredActivities = filterActivitiesByRole(allActivities, currentUser);
+    
+    console.log('=== ADMIN DASHBOARD ACTIVITY FILTERING DEBUG ===');
+    console.log('Current User:', currentUser);
+    console.log('Total Activities:', allActivities.length);
+    console.log('Filtered Activities:', filteredActivities.length);
+    console.log('Activities visible to user:');
+    
+    filteredActivities.forEach((activity, index) => {
+        console.log(`${index + 1}. [${activity.visibility}] ${activity.description} - ${activity.user} (${activity.userRole})`);
+    });
+    
+    // Show what was filtered out (for admins only)
+    if (currentUser.role === 'admin') {
+        const hiddenActivities = allActivities.filter(activity => 
+            !filteredActivities.includes(activity)
+        );
+        console.log('Hidden activities:', hiddenActivities.length);
+        hiddenActivities.forEach((activity, index) => {
+            console.log(`HIDDEN: [${activity.visibility}] ${activity.description} - ${activity.user}`);
+        });
+    }
 }
 
 function loadNotifications() {
@@ -318,26 +394,42 @@ function addActivity(description, user) {
     const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
     const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
     
-    activities.push({
+    const newActivity = {
         description: description,
         user: user || userData.name || 'System',
-        timestamp: new Date().toISOString()
-    });
+        userRole: userData.role || 'system',
+        userEmail: userData.email || '',
+        timestamp: new Date().toISOString(),
+        visibility: determineActivityVisibility(description, userData.role)
+    };
+
+    activities.push(newActivity);
 
     if (activities.length > 50) {
         activities.splice(0, activities.length - 50);
     }
 
     localStorage.setItem('pharmacy_activities', JSON.stringify(activities));
-    loadRecentActivities();
+    
+    // Reload activities based on current user's view
+    if (typeof loadRecentActivities === 'function') {
+        loadRecentActivities();
+    }
 }
 
 function clearActivity() {
-    if (confirm('Are you sure you want to clear all activity logs?')) {
+    const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    
+    if (currentUser.role !== 'admin') {
+        showNotification('Only administrators can clear activity logs', 'danger');
+        return;
+    }
+    
+    if (confirm('Are you sure you want to clear all activity logs? This action cannot be undone.')) {
         localStorage.setItem('pharmacy_activities', JSON.stringify([]));
         loadRecentActivities();
         showNotification('Activity log cleared', 'success');
-        addActivity('Cleared activity log', null);
+        addActivity('Cleared all activity logs', null);
     }
 }
 

@@ -542,6 +542,107 @@ function refreshStaffData() {
     }, 500);
 }
 
+// Activity Filtering Functions
+function filterActivitiesByRole(allActivities, currentUser) {
+    if (currentUser.role === 'admin') {
+        // Admins see all activities EXCEPT other admins' sensitive actions
+        return allActivities.filter(activity => {
+            if (activity.visibility === 'admin-only' && activity.userRole === 'admin' && activity.userEmail !== currentUser.email) {
+                // Hide other admins' sensitive activities from non-owner admins
+                return false;
+            }
+            return true;
+        });
+    } else {
+        // Normal users see only:
+        // 1. Their own activities (regardless of visibility)
+        // 2. General system activities (not admin-only)
+        return allActivities.filter(activity => {
+            // Always show user their own activities
+            if (activity.userEmail === currentUser.email) {
+                return true;
+            }
+            // Show system activities
+            if (activity.userRole === 'system') {
+                return true;
+            }
+            // Show general activities from other users that aren't sensitive
+            return activity.visibility !== 'admin-only';
+        });
+    }
+}
+
+function determineActivityVisibility(description, userRole) {
+    const sensitiveKeywords = [
+        'staff', 'admin', 'password', 'user account', 'permission', 
+        'role', 'delete', 'created account', 'deleted account'
+    ];
+    
+    const isSensitive = sensitiveKeywords.some(keyword => 
+        description.toLowerCase().includes(keyword)
+    );
+    
+    if (isSensitive) {
+        return 'admin-only';
+    }
+    
+    return 'all'; // Default to visible to all
+}
+
+function addActivity(description, user) {
+    const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    
+    const newActivity = {
+        description: description,
+        user: user || userData.name || 'System',
+        userRole: userData.role || 'system',
+        userEmail: userData.email || '',
+        timestamp: new Date().toISOString(),
+        visibility: determineActivityVisibility(description, userData.role)
+    };
+
+    activities.push(newActivity);
+
+    if (activities.length > 50) {
+        activities.splice(0, activities.length - 50);
+    }
+
+    localStorage.setItem('pharmacy_activities', JSON.stringify(activities));
+    
+    // Reload activities if the function exists
+    if (typeof loadRecentActivities === 'function') {
+        loadRecentActivities();
+    }
+}
+
+function debugActivityFiltering() {
+    const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    const allActivities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
+    const filteredActivities = filterActivitiesByRole(allActivities, currentUser);
+    
+    console.log('=== STAFF MANAGEMENT ACTIVITY FILTERING DEBUG ===');
+    console.log('Current User:', currentUser);
+    console.log('Total Activities:', allActivities.length);
+    console.log('Filtered Activities:', filteredActivities.length);
+    console.log('Activities visible to user:');
+    
+    filteredActivities.forEach((activity, index) => {
+        console.log(`${index + 1}. [${activity.visibility}] ${activity.description} - ${activity.user} (${activity.userRole})`);
+    });
+    
+    // Show what was filtered out (for admins only)
+    if (currentUser.role === 'admin') {
+        const hiddenActivities = allActivities.filter(activity => 
+            !filteredActivities.includes(activity)
+        );
+        console.log('Hidden activities:', hiddenActivities.length);
+        hiddenActivities.forEach((activity, index) => {
+            console.log(`HIDDEN: [${activity.visibility}] ${activity.description} - ${activity.user}`);
+        });
+    }
+}
+
 // Utility Functions
 function escapeHtml(text) {
     if (!text) return '';
@@ -570,23 +671,6 @@ function showNotification(message, type) {
     notification.on('hidden.bs.toast', function() {
         $(this).remove();
     });
-}
-
-function addActivity(description, user) {
-    const activities = JSON.parse(localStorage.getItem('pharmacy_activities') || '[]');
-    const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
-    
-    activities.push({
-        description: description,
-        user: user || userData.name || 'System',
-        timestamp: new Date().toISOString()
-    });
-
-    if (activities.length > 50) {
-        activities.splice(0, activities.length - 50);
-    }
-
-    localStorage.setItem('pharmacy_activities', JSON.stringify(activities));
 }
 
 // Navigation functions
