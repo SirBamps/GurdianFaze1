@@ -303,8 +303,14 @@ function viewMedicineInInventory(medicineId) {
     // Save medicine ID to highlight in inventory
     localStorage.setItem('highlightMedicine', medicineId);
     
-    // Navigate to inventory page
-    window.location.href = 'inventory.html';
+    // Check user role and navigate to appropriate inventory page
+    const userData = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    
+    if (userData.role === 'admin') {
+        window.location.href = 'inventory.html';
+    } else {
+        window.location.href = 'ninventory.html';
+    }
 }
 
 function removeMedicineFromShelves(medicineId) {
