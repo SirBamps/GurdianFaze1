@@ -1,0 +1,16 @@
+/* Global scaling to display site at approximately 80% visual size across devices.
+   Use `zoom` on Chromium-based browsers and a transform fallback for Firefox.
+   Note: This affects layout metrics; test interactive elements after enabling.
+*/
+html {
+    zoom: 0.8; /* Chrome, Edge, Opera */
+}
+
+@supports not (zoom: 1) {
+    /* Firefox fallback */
+    html {
+        transform: scale(0.8);
+        transform-origin: 0 0;
+        width: 125%; /* compensate so scaled content fills viewport */
+    }
+}
