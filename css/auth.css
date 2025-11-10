@@ -331,3 +331,21 @@ a:hover {
     box-shadow: 0 8px 25px rgba(0,0,0,0.15);
     border: 3px solid rgba(255,255,255,0.2);
 }
+
+/* Force approximate 80% scale for consistent visual size across devices.
+   Notes: `zoom` works in Chromium-based browsers; Firefox doesn't support `zoom` so
+   we use a `transform: scale()` fallback. Transform requires adjusting width to
+   avoid clipping (1 / 0.8 = 1.25). This approach forces a visual scale but may
+   slightly affect rendering/sharpness on some devices. */
+html {
+    zoom: 0.8; /* works in Chrome, Edge, Opera */
+}
+
+@supports not (zoom: 1) {
+    /* Firefox fallback */
+    html {
+        transform: scale(0.8);
+        transform-origin: 0 0;
+        width: 125%; /* compensate for scale so content fills viewport */
+    }
+}
