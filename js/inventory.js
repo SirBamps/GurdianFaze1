@@ -292,74 +292,179 @@ function processImport() {
     $('#importProgress').show();
     updateProgress(0, 'Reading file...');
     
-    // Simulate file processing
-    setTimeout(() => {
-        updateProgress(25, 'Validating data...');
-        
-        setTimeout(() => {
+    const fileExtension = file.name.split('.').pop().toLowerCase();
+    
+    // Read the file
+    const reader = new FileReader();
+    
+    reader.onload = function(e) {
+        try {
+            updateProgress(25, 'Validating data...');
+            
+            let fileContent = e.target.result;
+            let parsedData = [];
+            
+            // Parse CSV file
+            if (fileExtension === 'csv') {
+                parsedData = parseCSV(fileContent);
+            } else if (fileExtension === 'xlsx' || fileExtension === 'xls') {
+                // For Excel files, we'll treat them as CSV for now
+                // In production, you'd use a library like SheetJS
+                parsedData = parseCSV(fileContent);
+            }
+            
+            if (parsedData.length === 0) {
+                throw new Error('No valid data found in file');
+            }
+            
             updateProgress(50, 'Processing records...');
             
+            // Convert parsed data to medicine objects
+            const importedMedicines = [];
+            const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+            
+            parsedData.forEach((row, index) => {
+                // Skip header row if it exists
+                if (index === 0 && isHeaderRow(row)) {
+                    return;
+                }
+                
+                // Validate row has required fields
+                if (!row[0] || !row[1] || !row[2] || !row[3]) {
+                    console.warn('Skipping invalid row:', row);
+                    return;
+                }
+                
+                const medicine = {
+                    id: 'MED-' + Date.now() + '-' + index,
+                    name: row[0]?.trim() || 'Unknown',
+                    batchNumber: row[1]?.trim() || 'BATCH-' + Date.now(),
+                    quantity: parseInt(row[2]) || 0,
+                    expiryDate: formatExpiryDate(row[3]),
+                    storeNumber: row[4]?.trim() || 'STORE-001',
+                    shelfNumber: row[5]?.trim() || 'SHELF-A1',
+                    unitPrice: parseFloat(row[6]) || 0,
+                    manufacturer: row[7]?.trim() || 'Unknown Manufacturer',
+                    type: (row[8]?.trim() || 'tablet').toLowerCase(),
+                    sellingPrice: parseFloat(row[6]) * 1.25 || 0, // 25% markup
+                    supplier: row[9]?.trim() || '',
+                    dateAdded: new Date().toISOString(),
+                    lastUpdated: new Date().toISOString(),
+                    addedBy: currentUser.name || 'System'
+                };
+                
+                importedMedicines.push(medicine);
+            });
+            
+            if (importedMedicines.length === 0) {
+                throw new Error('No valid medicines found in file');
+            }
+            
+            updateProgress(75, 'Saving to database...');
+            
+            // Save imported medicines
             setTimeout(() => {
-                updateProgress(75, 'Saving to database...');
+                const existingMedicines = JSON.parse(localStorage.getItem('pharmacy_medicines') || '[]');
+                const updatedMedicines = [...existingMedicines, ...importedMedicines];
+                localStorage.setItem('pharmacy_medicines', JSON.stringify(updatedMedicines));
+                
+                updateProgress(100, 'Import completed!');
                 
                 setTimeout(() => {
-                    // Simulate successful import
-                    const sampleMedicines = [
-                        {
-                            id: 'MED-' + Date.now(),
-                            name: 'Imported Medicine 1',
-                            batchNumber: 'IMPORT-001',
-                            quantity: 50,
-                            expiryDate: '2024-12-31',
-                            storeNumber: 'STORE-001',
-                            shelfNumber: 'SHELF-IMPORT',
-                            unitPrice: 2000,
-                            manufacturer: 'Imported Manufacturer',
-                            type: 'tablet',
-                            dateAdded: new Date().toISOString(),
-                            addedBy: JSON.parse(localStorage.getItem('pharmacy_user') || '{}').name || 'System'
-                        },
-                        {
-                            id: 'MED-' + (Date.now() + 1),
-                            name: 'Imported Medicine 2',
-                            batchNumber: 'IMPORT-002',
-                            quantity: 25,
-                            expiryDate: '2024-11-30',
-                            storeNumber: 'STORE-001',
-                            shelfNumber: 'SHELF-IMPORT',
-                            unitPrice: 3500,
-                            manufacturer: 'Imported Manufacturer',
-                            type: 'capsule',
-                            dateAdded: new Date().toISOString(),
-                            addedBy: JSON.parse(localStorage.getItem('pharmacy_user') || '{}').name || 'System'
-                        }
-                    ];
+                    $('#importModal').modal('hide');
+                    showNotification(`Stock imported successfully! ${importedMedicines.length} medicine(s) added.`, 'success');
+                    addActivity(`Imported ${importedMedicines.length} medicine(s) from ${file.name}`, null);
                     
-                    // Save imported medicines
-                    const existingMedicines = JSON.parse(localStorage.getItem('pharmacy_medicines') || '[]');
-                    const updatedMedicines = [...existingMedicines, ...sampleMedicines];
-                    localStorage.setItem('pharmacy_medicines', JSON.stringify(updatedMedicines));
+                    // Reset form and reload data
+                    fileInput.value = '';
+                    importBtn.html(originalText);
+                    importBtn.prop('disabled', false);
+                    $('#importProgress').hide();
                     
-                    updateProgress(100, 'Import completed!');
-                    
-                    setTimeout(() => {
-                        $('#importModal').modal('hide');
-                        showNotification('Stock imported successfully! 2 new medicines added.', 'success');
-                        addActivity('Imported stock from CSV file', null);
-                        
-                        // Reset form and reload data
-                        fileInput.value = '';
-                        importBtn.html(originalText);
-                        importBtn.prop('disabled', false);
-                        $('#importProgress').hide();
-                        
-                        loadInventoryData();
-                    }, 1000);
-                    
+                    loadInventoryData();
                 }, 1000);
             }, 1000);
-        }, 1000);
-    }, 1000);
+            
+        } catch (error) {
+            console.error('Import error:', error);
+            showNotification('Error importing file: ' + error.message, 'danger');
+            importBtn.html(originalText);
+            importBtn.prop('disabled', false);
+            $('#importProgress').hide();
+        }
+    };
+    
+    reader.onerror = function() {
+        showNotification('Error reading file. Please try again.', 'danger');
+        importBtn.html(originalText);
+        importBtn.prop('disabled', false);
+        $('#importProgress').hide();
+    };
+    
+    // Read file as text
+    reader.readAsText(file);
+}
+
+// Helper function to parse CSV content
+function parseCSV(csvContent) {
+    const lines = csvContent.split('\n').filter(line => line.trim());
+    const result = [];
+    
+    for (let i = 0; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue;
+        
+        // Handle CSV with quotes
+        const values = [];
+        let current = '';
+        let inQuotes = false;
+        
+        for (let j = 0; j < line.length; j++) {
+            const char = line[j];
+            
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                values.push(current.trim());
+                current = '';
+            } else {
+                current += char;
+            }
+        }
+        values.push(current.trim()); // Push last value
+        
+        result.push(values);
+    }
+    
+    return result;
+}
+
+// Helper function to check if row is a header
+function isHeaderRow(row) {
+    const firstCell = row[0]?.toLowerCase() || '';
+    return firstCell.includes('medicine') || firstCell.includes('name') || firstCell.includes('drug');
+}
+
+// Helper function to format expiry date
+function formatExpiryDate(dateStr) {
+    if (!dateStr) return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    
+    // Try to parse different date formats
+    const dateStr2 = dateStr.trim();
+    
+    // Check if it's already in YYYY-MM-DD format
+    if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr2)) {
+        return dateStr2;
+    }
+    
+    // Try parsing other formats
+    const date = new Date(dateStr2);
+    if (!isNaN(date.getTime())) {
+        return date.toISOString().split('T')[0];
+    }
+    
+    // Default to 1 year from now if parsing fails
+    return new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
 }
 
 function updateProgress(percent, text) {
