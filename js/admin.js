@@ -293,6 +293,9 @@ function loadNotifications() {
 }
 
 function setupEventListeners() {
+    // Password reset form
+    $('#passwordResetForm').on('submit', handlePasswordReset);
+    
     // Mobile sidebar toggle
     $('[data-bs-toggle="collapse"]').on('click', function() {
         $('.sidebar').toggleClass('show');
@@ -510,4 +513,69 @@ function logout() {
             window.location.href = 'login.html';
         }, 1500);
     }
+}
+
+// Password Management Functions
+function showPasswordResetModal() {
+    $('#passwordResetModal').modal('show');
+}
+
+function handlePasswordReset(e) {
+    e.preventDefault();
+    
+    const currentPassword = $('#currentPassword').val();
+    const newPassword = $('#resetNewPassword').val();
+    const confirmPassword = $('#resetConfirmPassword').val();
+    
+    // Validation
+    if (!currentPassword || !newPassword || !confirmPassword) {
+        showNotification('Please fill all fields', 'danger');
+        return;
+    }
+    
+    if (newPassword !== confirmPassword) {
+        showNotification('New passwords do not match', 'danger');
+        return;
+    }
+    
+    if (!validatePassword(newPassword)) {
+        showNotification('Password must be at least 8 characters with letters and numbers', 'danger');
+        return;
+    }
+    
+    const currentUser = JSON.parse(localStorage.getItem('pharmacy_user') || '{}');
+    const staffData = JSON.parse(localStorage.getItem('pharmacy_staff') || '[]');
+    const userIndex = staffData.findIndex(staff => staff.id === currentUser.id);
+    
+    if (userIndex === -1) {
+        showNotification('User not found', 'danger');
+        return;
+    }
+    
+    // Verify current password
+    if (staffData[userIndex].password !== currentPassword) {
+        showNotification('Current password is incorrect', 'danger');
+        return;
+    }
+    
+    // Update password
+    staffData[userIndex].password = newPassword;
+    localStorage.setItem('pharmacy_staff', JSON.stringify(staffData));
+    
+    showNotification('✅ Password changed successfully!', 'success');
+    addActivity(`Password changed for: ${staffData[userIndex].name}`, 'System');
+    
+    // Close modal and reset form
+    setTimeout(() => {
+        $('#passwordResetModal').modal('hide');
+        $('#passwordResetForm')[0].reset();
+    }, 1500);
+}
+
+function validatePassword(password) {
+    const minLength = 8;
+    const hasLetter = /[a-zA-Z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    
+    return password.length >= minLength && hasLetter && hasNumber;
 }

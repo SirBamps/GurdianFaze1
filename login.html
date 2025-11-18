@@ -32,30 +32,19 @@
 
         <!-- Auth Card -->
         <div class="auth-card">
-            <!-- Tabs -->
-            <ul class="nav nav-pills nav-justified mb-4" id="authTabs" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link active" id="login-tab" data-bs-toggle="tab" data-bs-target="#login" type="button" role="tab">
-                        <i class="fas fa-sign-in-alt me-2"></i>Login
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link" id="signup-tab" data-bs-toggle="tab" data-bs-target="#signup" type="button" role="tab">
-                        <i class="fas fa-user-plus me-2"></i>Admin Signup
-                    </button>
-                </li>
-            </ul>
-
-            <!-- Tab Content -->
-            <div class="tab-content">
-                <!-- Login Form -->
-                <div class="tab-pane fade show active" id="login" role="tabpanel">
+            <!-- Login Form -->
+            <div class="mb-4 text-center">
+                <h4 class="text-dark"><i class="fas fa-sign-in-alt me-2"></i>Administrator Login</h4>
+                <p class="text-muted">Enter your credentials to access the system</p>
+            </div>
+            
+            <div id="login">
                     <form id="loginForm">
                         <div class="mb-3">
-                            <label for="loginEmail" class="form-label">Email Address</label>
+                            <label for="loginUsername" class="form-label">Username or Email</label>
                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                <input type="email" class="form-control" id="loginEmail" required>
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="loginUsername" placeholder="Enter username or email" required>
                             </div>
                         </div>
                         
@@ -80,81 +69,8 @@
                         </button>
 
                         <div class="text-center">
-                            <a href="#" class="text-muted" onclick="showForgotPassword()">Forgot Password?</a>
+                            <small class="text-muted">Contact administrator for password assistance</small>
                         </div>
-                    </form>
-                </div>
-
-                <!-- Signup Form (Admin Only) -->
-                <div class="tab-pane fade" id="signup" role="tabpanel">
-                    <div class="alert alert-info">
-                        <i class="fas fa-info-circle me-2"></i>
-                        <strong>Admin Registration Only</strong><br>
-                        Maximum 2 admin accounts allowed for system security.
-                    </div>
-
-                    <form id="signupForm">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="signupName" class="form-label">Full Name</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-user"></i></span>
-                                    <input type="text" class="form-control" id="signupName" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="signupEmail" class="form-label">Email Address</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                    <input type="email" class="form-control" id="signupEmail" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="signupPassword" class="form-label">Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="signupPassword" required>
-                                    <button class="btn btn-outline-secondary" type="button" id="toggleSignupPassword">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                </div>
-                                <div class="password-strength mt-2">
-                                    <div class="progress" style="height: 5px;">
-                                        <div class="progress-bar" id="passwordStrengthBar" style="width: 0%"></div>
-                                    </div>
-                                    <small class="text-muted" id="passwordStrengthText">Password strength</small>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="signupConfirmPassword" class="form-label">Confirm Password</label>
-                                <div class="input-group">
-                                    <span class="input-group-text"><i class="fas fa-lock"></i></span>
-                                    <input type="password" class="form-control" id="signupConfirmPassword" required>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="signupPhone" class="form-label">Phone Number</label>
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-phone"></i></span>
-                                <input type="tel" class="form-control" id="signupPhone">
-                            </div>
-                        </div>
-
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="agreeTerms" required>
-                            <label class="form-check-label" for="agreeTerms">
-                                I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
-                            </label>
-                        </div>
-
-                        <button type="submit" class="btn btn-success w-100">
-                            <i class="fas fa-user-shield me-2"></i>Create Admin Account
-                        </button>
                     </form>
                 </div>
             </div>
@@ -163,30 +79,114 @@
         <!-- System Info -->
         <div class="system-info text-center mt-4">
             <p class="text-muted">
-                <i class="fas fa-info-circle me-1"></i>
-                Pharmacist accounts can only be created by system administrators after login.
+                <i class="fas fa-shield-alt me-1"></i>
+                Secure authentication system - Maximum 2 admin accounts
+            </p>
+            <p class="text-muted">
+                <small>Default credentials - Username: <strong>admin</strong> | Password: <strong>admin@123</strong></small>
             </p>
         </div>
     </div>
 
-    <!-- Forgot Password Modal -->
-    <div class="modal fade" id="forgotPasswordModal">
+    <!-- First Time Login Modal -->
+    <div class="modal fade" id="firstTimeLoginModal" data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title"><i class="fas fa-key me-2"></i>Reset Password</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>First Time Login - Change Credentials</h5>
                 </div>
                 <div class="modal-body">
-                    <p>Please contact your system administrator to reset your password.</p>
-                    <div class="alert alert-info">
-                        <i class="fas fa-phone me-2"></i>
-                        <strong>Admin Contact:</strong><br>
-                        Call or visit the pharmacy administrator for password assistance.
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Security Required!</strong><br>
+                        You must change your username, password, and provide your email before continuing.
                     </div>
+                    
+                    <form id="firstTimeForm">
+                        <div class="mb-3">
+                            <label for="newUsername" class="form-label">New Username</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input type="text" class="form-control" id="newUsername" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newEmail" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                <input type="email" class="form-control" id="newEmail" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="newPassword" required>
+                                <button class="btn btn-outline-secondary" type="button" id="toggleNewPassword">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <small class="text-muted">Min 8 characters with letters and numbers</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="confirmNewPassword" class="form-label">Confirm New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="confirmNewPassword" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-warning w-100">
+                            <i class="fas fa-save me-2"></i>Update Credentials & Continue
+                        </button>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Password Reset Modal (For logged-in admins) -->
+    <div class="modal fade" id="passwordResetModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title"><i class="fas fa-key me-2"></i>Change Password</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="passwordResetForm">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="currentPassword" required>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="resetNewPassword" class="form-label">New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="resetNewPassword" required>
+                            </div>
+                            <small class="text-muted">Min 8 characters with letters and numbers</small>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="resetConfirmPassword" class="form-label">Confirm New Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input type="password" class="form-control" id="resetConfirmPassword" required>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-save me-2"></i>Change Password
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
